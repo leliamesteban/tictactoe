@@ -15,18 +15,20 @@ function Square(props) {
 function Board() {
 
 	const [squares, setSquares] = useState(Array(9).fill(null));
+	const [nextPlayerIsX, setNextPlayerIsX] = useState(true);
+
+	const status = 'Next player: ' + (nextPlayerIsX ? 'X' : 'O');
 
 	function handleClick(i) {
 		const tmp = squares.slice(0);
-		tmp[i] = 'X';
+		tmp[i] = nextPlayerIsX ? 'X' : 'O';
 		setSquares(tmp);
+		setNextPlayerIsX(!nextPlayerIsX);
 	}
 
 	function renderSquare(i) {
 		return <Square value={squares[i]} onClick={() => handleClick(i)} />;
 	}
-
-	const status = 'Next player: X';
 
 	return (
 		<div>
