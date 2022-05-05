@@ -47,7 +47,7 @@ function Game() {
 			squares: Array(9).fill(null)
 		}
 	]);
-	const [nextPlayerIsX, setNextPlayerIsX] = useState(true);
+	const [nextPlayer, setNextPlayer] = useState("X");
 
 	const current = history[history.length - 1];
 	const winner = calculateWinner(current.squares);
@@ -57,7 +57,7 @@ function Game() {
 		status = "Winner: " + winner;
 	}
 	else {
-		status = 'Next player: ' + (nextPlayerIsX ? 'X' : 'O');
+		status = 'Next player: ' + nextPlayer;
 	}
 
 	function handleClick(i) {
@@ -65,18 +65,27 @@ function Game() {
 		if (calculateWinner(squares) || squares[i]) {
 			return;
 		}
+
 		const tmp = squares.slice(0);
-		tmp[i] = nextPlayerIsX ? 'X' : 'O';
+		tmp[i] = nextPlayer;
+
 		setHistory(history.concat(
-			{squares: tmp}
-			));
-		setNextPlayerIsX(!nextPlayerIsX);
+			{ squares: tmp }
+		));
+
+		if (nextPlayer == "X") {
+			setNextPlayer("O");
+		}
+
+		else {
+			setNextPlayer("X");
+		}
 	}
 
 	return (
 		<div className="game">
 			<div className="game-board">
-				<Board squares={current.squares} onClick={(i) => handleClick(i)}/>
+				<Board squares={current.squares} onClick={(i) => handleClick(i)} />
 			</div>
 
 			<div className="game-info">
@@ -90,24 +99,24 @@ function Game() {
 // Helper function
 function calculateWinner(squares) {
 	const lines = [
-	  [0, 1, 2],
-	  [3, 4, 5],
-	  [6, 7, 8],
-	  [0, 3, 6],
-	  [1, 4, 7],
-	  [2, 5, 8],
-	  [0, 4, 8],
-	  [2, 4, 6],
+		[0, 1, 2],
+		[3, 4, 5],
+		[6, 7, 8],
+		[0, 3, 6],
+		[1, 4, 7],
+		[2, 5, 8],
+		[0, 4, 8],
+		[2, 4, 6],
 	];
 
 	for (let i = 0; i < lines.length; i++) {
-	  const [a, b, c] = lines[i];
-	  if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-		return squares[a];
-	  }
+		const [a, b, c] = lines[i];
+		if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+			return squares[a];
+		}
 	}
 	return null;
-  }
+}
 
 // ========================================
 
