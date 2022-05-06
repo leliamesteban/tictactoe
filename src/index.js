@@ -48,9 +48,31 @@ function Game() {
 		}
 	]);
 	const [nextPlayer, setNextPlayer] = useState("X");
+	const [stepNumber, setStepNumber] = useState(0);
 
-	const current = history[history.length - 1];
+	const current = history[stepNumber];
 	const winner = calculateWinner(current.squares);
+
+	const moves = history.map((step, move) => {
+		const description = move ?
+		'Go to move #' + move :
+		'Go to game start';
+
+		return (
+			<li key={move}>
+				<button onClick={() => jumpTo(move)}>{description}</button>
+			</li>
+		);
+	})
+
+	function jumpTo(step) {
+		setStepNumber(step);
+		if ((step % 2) === 0) {
+			setNextPlayer("X");
+		} else {
+			setNextPlayer("O");
+		}
+	}
 
 	let status;
 	if (winner) {
@@ -66,12 +88,16 @@ function Game() {
 			return;
 		}
 
-		const tmp = squares.slice(0);
-		tmp[i] = nextPlayer;
+		const squaresCopy = squares.slice(0);
+		squaresCopy[i] = nextPlayer;
 
-		setHistory(history.concat(
-			{ squares: tmp }
+		// Make a copy of the history array up to the current move, so that if the user makes a new move, it overwrites the history from that point onwards
+		const historyCopy = history.slice(0, stepNumber + 1);
+		setHistory(historyCopy.concat(
+			{ squares: squaresCopy }
 		));
+
+		setStepNumber(historyCopy.length);
 
 		if (nextPlayer == "X") {
 			setNextPlayer("O");
@@ -90,7 +116,7 @@ function Game() {
 
 			<div className="game-info">
 				<div>{status}</div>
-				<ol>{/* moves */}</ol>
+				<ol>{moves}</ol>
 			</div>
 		</div>
 	);
