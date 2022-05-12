@@ -51,7 +51,11 @@ function Game() {
 	const [stepNumber, setStepNumber] = useState(0);
 
 	const current = history[stepNumber];
-	const winner = calculateWinner(current.squares);
+	const squares = current.squares;
+	const winner = calculateWinner(squares);
+	const status = winner ?
+	"Winner: " + winner :
+	"Next player: " + nextPlayer;
 
 	const moves = history.map((step, move) => {
 		const description = move ?
@@ -74,16 +78,7 @@ function Game() {
 		}
 	}
 
-	let status;
-	if (winner) {
-		status = "Winner: " + winner;
-	}
-	else {
-		status = 'Next player: ' + nextPlayer;
-	}
-
 	function handleClick(i) {
-		const squares = current.squares;
 		if (calculateWinner(squares) || squares[i]) {
 			return;
 		}
@@ -99,7 +94,7 @@ function Game() {
 
 		setStepNumber(historyCopy.length);
 
-		if (nextPlayer == "X") {
+		if (nextPlayer === "X") {
 			setNextPlayer("O");
 		}
 
@@ -111,7 +106,7 @@ function Game() {
 	return (
 		<div className="game">
 			<div className="game-board">
-				<Board squares={current.squares} onClick={(i) => handleClick(i)} />
+				<Board squares={squares} onClick={(i) => handleClick(i)} />
 			</div>
 
 			<div className="game-info">
