@@ -14,8 +14,8 @@ function Square(props) {
 // The Board component renders 3 rows of 3 squares
 function Board(props) {
 
-	function renderSquare(i) {
-		return <Square value={props.squares[i]} onClick={() => props.onClick(i)} />;
+	function renderSquare(index) {
+		return <Square value={props.board[index]} onClick={() => props.onClick(index)} />;
 	}
 
 	return (
@@ -42,22 +42,21 @@ function Board(props) {
 // The Game component renders the board and contains all logic and state
 function Game() {
 
-	const [history, setHistory] = useState([
+	const [boards, setBoards] = useState([
 		{
 			squares: Array(9).fill(null)
 		}
 	]);
 	const [nextPlayer, setNextPlayer] = useState("X");
-	const [stepNumber, setStepNumber] = useState(0);
+	const [move, setMove] = useState(0);
 
-	const current = history[stepNumber];
-	const squares = current.squares;
-	const winner = calculateWinner(squares);
+	const currentBoard = boards[move].squares;
+	const winner = calculateWinner(currentBoard);
 	const status = winner ?
 	"Winner: " + winner :
 	"Next player: " + nextPlayer;
 
-	const moves = history.map((step, move) => {
+	const moves = boards.map((step, move) => {
 		const description = move ?
 		'Go to move #' + move :
 		'Go to game start';
@@ -69,30 +68,29 @@ function Game() {
 		);
 	})
 
-	function jumpTo(step) {
-		setStepNumber(step);
-		if ((step % 2) === 0) {
+	function jumpTo(move) {
+		setMove(move);
+		if ((move % 2) === 0) {
 			setNextPlayer("X");
 		} else {
 			setNextPlayer("O");
 		}
 	}
 
-	function handleClick(i) {
-		if (calculateWinner(squares) || squares[i]) {
+	function addMove(move) {
+		if (calculateWinner(currentBoard) || currentBoard[move]) {
 			return;
 		}
 
-		const squaresCopy = squares.slice(0);
-		squaresCopy[i] = nextPlayer;
+		const nextBoard = currentBoard.slice(0);
+		nextBoard[move] = nextPlayer;
 
-		// Make a copy of the history array up to the current move, so that if the user makes a new move, it overwrites the history from that point onwards
-		const historyCopy = history.slice(0, stepNumber + 1);
-		setHistory(historyCopy.concat(
-			{ squares: squaresCopy }
+		const boardsCopy = boards.slice(0, move + 1);
+		setBoards(boardsCopy.concat(
+			{ squares: nextBoard }
 		));
 
-		setStepNumber(historyCopy.length);
+		setMove(boardsCopy.length);
 
 		if (nextPlayer === "X") {
 			setNextPlayer("O");
@@ -106,7 +104,7 @@ function Game() {
 	return (
 		<div className="game">
 			<div className="game-board">
-				<Board squares={squares} onClick={(i) => handleClick(i)} />
+				<Board board={currentBoard} onClick={(move) => addMove(move)} />
 			</div>
 
 			<div className="game-info">
