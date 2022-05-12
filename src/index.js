@@ -42,15 +42,11 @@ function Board(props) {
 // The Game component renders the board and contains all logic and state
 function Game() {
 
-	const [boards, setBoards] = useState([
-		{
-			squares: Array(9).fill(null)
-		}
-	]);
+	const [boards, setBoards] = useState([ Array(9).fill(null) ]);
 	const [nextPlayer, setNextPlayer] = useState("X");
 	const [move, setMove] = useState(0);
 
-	const currentBoard = boards[move].squares;
+	const currentBoard = boards[move];
 	const winner = calculateWinner(currentBoard);
 	const status = winner ?
 	"Winner: " + winner :
@@ -77,18 +73,16 @@ function Game() {
 		}
 	}
 
-	function addMove(move) {
-		if (calculateWinner(currentBoard) || currentBoard[move]) {
+	function addMove(newMove) {
+		if (calculateWinner(currentBoard) || currentBoard[newMove]) {
 			return;
 		}
 
 		const nextBoard = currentBoard.slice(0);
-		nextBoard[move] = nextPlayer;
+		nextBoard[newMove] = nextPlayer;
 
 		const boardsCopy = boards.slice(0, move + 1);
-		setBoards(boardsCopy.concat(
-			{ squares: nextBoard }
-		));
+		setBoards(boardsCopy.concat([nextBoard]));
 
 		setMove(boardsCopy.length);
 
@@ -109,7 +103,7 @@ function Game() {
 
 			<div className="game-info">
 				<div>{status}</div>
-				<ol>{moves}</ol>
+				<ul>{moves}</ul>
 			</div>
 		</div>
 	);
