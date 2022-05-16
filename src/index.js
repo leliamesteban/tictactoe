@@ -59,12 +59,12 @@ function Game() {
 
 		return (
 			<li key={move}>
-				<button onClick={() => jumpTo(move)}>{description}</button>
+				<button onClick={() => goTo(move)}>{description}</button>
 			</li>
 		);
 	})
 
-	function jumpTo(move) {
+	function goTo(move) {
 		setMove(move);
 		if ((move % 2) === 0) {
 			setNextPlayer("X");
@@ -73,13 +73,13 @@ function Game() {
 		}
 	}
 
-	function addMove(newMove) {
-		if (calculateWinner(currentBoard) || currentBoard[newMove]) {
+	function addMove(index) {
+		if (calculateWinner(currentBoard) || currentBoard[index]) {
 			return;
 		}
 
 		const nextBoard = currentBoard.slice(0);
-		nextBoard[newMove] = nextPlayer;
+		nextBoard[index] = nextPlayer;
 
 		const boardsCopy = boards.slice(0, move + 1);
 		setBoards(boardsCopy.concat([nextBoard]));
