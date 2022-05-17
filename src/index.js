@@ -39,39 +39,39 @@ function Board(props) {
 	);
 }
 
-// The Game component renders the board and contains all logic and state
-function Game() {
-
-	const [boards, setBoards] = useState([ Array(9).fill(null) ]);
-	const [nextPlayer, setNextPlayer] = useState("X");
-	const [move, setMove] = useState(0);
-
-	const currentBoard = boards[move];
-	const winner = calculateWinner(currentBoard);
-	const status = winner ?
-	"Winner: " + winner :
-	"Next player: " + nextPlayer;
-
-	const moves = boards.map((step, move) => {
+function History(props) {
+	const moves = props.boards.map((step, move) => {
 		const description = move ?
 		'Go to move #' + move :
 		'Go to game start';
 
 		return (
 			<li key={move}>
-				<button onClick={() => goTo(move)}>{description}</button>
+				<button onClick={() => props.handleClick(move)}>{description}</button>
 			</li>
 		);
 	})
 
-	function goTo(move) {
-		setMove(move);
-		if ((move % 2) === 0) {
-			setNextPlayer("X");
-		} else {
-			setNextPlayer("O");
-		}
-	}
+	return (
+		<ul>
+			{moves}
+		</ul>
+	)
+}
+
+// The Game component renders the board and contains all logic and state
+function Game() {
+
+	const [boards, setBoards] = useState([Array(9).fill(null)]);
+	const [nextPlayer, setNextPlayer] = useState("X");
+	const [move, setMove] = useState(0);
+
+	const currentBoard = boards[move];
+	const winner = calculateWinner(currentBoard);
+	const status = winner ?
+		"Winner: " + winner :
+		"Next player: " + nextPlayer;
+
 
 	function addMove(index) {
 		if (calculateWinner(currentBoard) || currentBoard[index]) {
@@ -95,6 +95,15 @@ function Game() {
 		}
 	}
 
+	function goTo(move) {
+		setMove(move);
+		if ((move % 2) === 0) {
+			setNextPlayer("X");
+		} else {
+			setNextPlayer("O");
+		}
+	}
+
 	return (
 		<div className="game">
 			<div className="game-board">
@@ -103,7 +112,7 @@ function Game() {
 
 			<div className="game-info">
 				<div>{status}</div>
-				<ul>{moves}</ul>
+				<History boards={boards} handleClick={(move) => goTo(move)}/>
 			</div>
 		</div>
 	);
