@@ -3,19 +3,19 @@ import {useState} from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 
-function Square(props) {
+function Square({value, onClick}) {
 	return (
-		<button className="square" onClick={props.onClick}>
-			{props.value}
+		<button className="square" onClick={onClick}>
+			{value}
 		</button>
 	);
 }
 
 // The Board component renders 3 rows of 3 squares
-function Board(props) {
+function Board({board, onClick}) {
 
 	function renderSquare(index) {
-		return <Square value={props.board[index]} onClick={() => props.onClick(index)} />;
+		return <Square value={board[index]} onClick={() => onClick(index)} />;
 	}
 
 	return (
@@ -39,15 +39,15 @@ function Board(props) {
 	);
 }
 
-function History(props) {
-	const moves = props.boards.map((step, move) => {
+function History({boards, onClick}) {
+	const moves = boards.map((step, move) => {
 		const description = move ?
 		'Go to move #' + move :
 		'Go to game start';
 
 		return (
 			<li key={move}>
-				<button onClick={() => props.handleClick(move)}>{description}</button>
+				<button onClick={() => onClick(move)}>{description}</button>
 			</li>
 		);
 	})
@@ -105,16 +105,19 @@ function Game() {
 	}
 
 	return (
-		<div className="game">
-			<div className="game-board">
-				<Board board={currentBoard} onClick={(move) => addMove(move)} />
-			</div>
+		<>
+			<p>Tic tac toe</p>
+			<div className="game">
+				<div className="game-board">
+					<Board board={currentBoard} onClick={(move) => addMove(move)} />
+				</div>
 
-			<div className="game-info">
-				<div>{status}</div>
-				<History boards={boards} handleClick={(move) => goTo(move)}/>
+				<div className="game-info">
+					<div>{status}</div>
+					<History boards={boards} onClick={(move) => goTo(move)} />
+				</div>
 			</div>
-		</div>
+		</>
 	);
 }
 
